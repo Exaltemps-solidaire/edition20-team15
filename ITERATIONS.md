@@ -1,6 +1,6 @@
 # Plan d'itérations — L'BURN (équipe `9UV4RR`)
 
-**Itérations 1 et 2 validées et réalisées. Itération 3 : plan validé le 2026-11-18 (ordre Pause-avant-Mémorisation confirmé par les cadreurs).**
+**Itérations 1, 2 et 3 validées et réalisées. Itération 4 proposée le 2026-11-18 : dernière itération, consacrée à la stabilisation (annoncée par le développeur), en attente de validation.**
 
 - **Source du plan** : proposé par l'agent (aucun plan d'itérations trouvé dans la passation : ni fichier `cadrage/*iteration*`, ni clé `iterations` dans `passation.json`).
 - **Temps restant annoncé** : 60 minutes, à la question posée le 2026-11-18.
@@ -12,6 +12,10 @@
 - **Capacité estimée** : chaque itération coûte au moins publication (~5 min) + tour de test (10 min) = 15 min fixes, plus le codage (10 min au plus, mais ~2-3 min en pratique sur les itérations 1 et 2). Avec 35 minutes restantes, **1 itération détaillée (3) tient confortablement ; la 4e, si le temps le permet encore, sera une stabilisation courte plutôt qu'une nouvelle fonctionnalité.**
 - **⚠️ Changement d'ordre à valider par les cadreurs** : le plan numéroté de `cadrage/7-prd.md` (§153-164) place « 2. Mémorisation automatique » avant « 3. Pause et reprise ». Cette replanification garde **Pause et reprise** en premier (comme annoncé après l'itération 1), car la Mémorisation automatique suppose des écrans « ateliers » et « ressources » absents du prototype (`7-prd.md` §143 : « les écrans suivants non fournis… »), qu'il faudrait inventer — hors de ce que permet `CLAUDE.md` (« Inventer une fonctionnalité absente de la passation »). Pause et reprise, elle, a un écran décrit (§107) et s'enchaîne directement sur le bloc « envie du moment » déjà construit en itération 2.
 - **✂️ Ce qui sort probablement du périmètre** si le temps ne s'étend pas : la **Mémorisation automatique** (nécessite de clarifier les écrans ateliers/ressources avec les cadreurs, ❓) et la **Découverte de BIB**. Ils restent dans « À venir ».
+- **Temps restant à la replanification après l'itération 3** : 15 minutes, annoncé le 2026-11-18 par le développeur, qui précise que **l'itération 4 sera la dernière** du hackathon.
+- **Durée du tour de test PM Lab** : toujours 10 minutes (valeur par défaut, confirmée à nouveau).
+- **✂️ Capacité à ce stade** : les coûts fixes seuls (publication ~5 min + tour de test 10 min) consomment déjà les 15 minutes restantes. Il ne reste donc **pas de budget réel pour du code nouveau** : l'itération 4 est une itération de **stabilisation pour le pitch**, pas une fonctionnalité — conformément à la règle de `CLAUDE.md` (« quand le temps restant ne permet plus qu'une itération, consacre-la à stabiliser ce qui sera montré au pitch ») et à la décision du développeur.
+- **⚠️ Conséquence actée pour les cadreurs** : la **Mémorisation automatique** et la **Découverte de BIB** ne seront pas livrées dans ce hackathon. Elles restent documentées dans « À venir » pour une suite éventuelle, mais sortent du périmètre de cette session.
 
 ## Itération 1 : la BURN'ette voit son tableau de bord avec son avancement par module
 
@@ -119,8 +123,25 @@
     - `frontend/src/app/page.tsx` — redirection vers `/pause` si l'état de pause est actif au chargement, déclenchement de la pause depuis le bloc « envie du moment » ; sert les critères 1 et 2.
     - `e2e/demo.spec.ts` — étapes « Je choisis de faire une pause » et « Je reprends mon parcours ».
 
-## À venir (non détaillé, à re-découper au fil de l'eau)
+## Itération 4 : stabilisation de ce qui sera montré au pitch (dernière itération)
 
-1. Stabilisation finale pour le pitch, si le temps restant ne permet plus de nouvelle fonctionnalité — l'itération 3 n'a pris qu'~1 minute de codage, donc à reconfirmer avec le temps restant réel avant l'itération 4.
-2. Mémorisation automatique des ateliers réservés/suivis et ressources consultées : ❓ nécessite de clarifier avec les cadreurs les écrans « ateliers » et « ressources », absents du prototype fourni.
-3. Découverte de BIB : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe. *(hors du temps restant)*
+- **Dans le périmètre** :
+  - Rejouer l'intégralité du cas passant (choix du persona → tableau de bord → envie du moment → pause → reprise) et corriger toute anomalie visible découverte à cette occasion.
+  - Revérifier que le contrat de déployabilité, les tests et le signalement sont propres sur la version finale, et republier si une correction a été nécessaire.
+  - Aucune fonctionnalité nouvelle : le temps restant (15 minutes) est entièrement consommé par la publication (~5 min) et le tour de test (10 min).
+- **Hors périmètre** : Mémorisation automatique, Découverte de BIB (cf. ⚠️ ci-dessus — ne seront pas livrées dans ce hackathon), toute nouvelle fonctionnalité.
+- **Critères d'acceptation** (3 au plus) :
+  - Étant donné la version déployée, quand on rejoue le cas passant de bout en bout (persona → tableau de bord → envie du moment → pause → reprise), alors chaque étape fonctionne sans erreur visible.
+  - Étant donné `npm test` et `./scripts/verifier-deployabilite.sh`, quand on les relance sur la version finale, alors aucun test n'échoue et aucune borne n'est signalée.
+  - Étant donné la version finale publiée, quand elle est signalée à PM Lab, alors le signal « version-prete » de l'itération 4 est accepté par le harnais.
+- **Hypothèse de l'équipe couverte** : aucune nouvelle — cette itération consolide les hypothèses déjà couvertes par les itérations 1 à 3.
+- **Codage estimé** : ~0 à 2 minutes (corrections ponctuelles uniquement si une anomalie est trouvée pendant la vérification ; aucune nouvelle fonctionnalité).
+- **Fichiers prévus** : aucun par défaut ; seulement des corrections ciblées si la vérification en révèle le besoin (libellé, CSS, docs).
+- **Tests unitaires prévus** : aucun nouveau (pas de nouvelle logique métier) ; les 11 tests existants doivent continuer à passer.
+- **Étapes ajoutées à la démo** : aucune nouvelle étape ; rejouer `e2e/demo.spec.ts` tel quel pour confirmer la stabilité.
+- **Bilan** : _à remplir en fin d'itération_
+
+## À venir (hors périmètre de ce hackathon)
+
+1. ⚠️ **Mémorisation automatique** des ateliers réservés/suivis et ressources consultées : reportée au-delà de ce hackathon — nécessitait de clarifier avec les cadreurs les écrans « ateliers » et « ressources », absents du prototype fourni (❓, jamais levé faute de temps).
+2. ⚠️ **Découverte de BIB** : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe — reportée au-delà de ce hackathon faute de temps restant.
