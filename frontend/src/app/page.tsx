@@ -47,7 +47,7 @@ export default function Home() {
   const [action, setAction] = useState<ProchaineAction | null>(null);
 
   useEffect(() => {
-    if (!personaId) {
+    if (!personaId || !trouverPersona(personaId)) {
       router.replace("/qui-etes-vous");
       return;
     }

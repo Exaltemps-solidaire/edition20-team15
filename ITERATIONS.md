@@ -148,6 +148,12 @@
   - **Démo (hors DoD)** : non rejouée (budget consommé par la republication/vérification) ; `e2e/demo.spec.ts` inchangé, limitation déjà documentée (itérations 2 et 3) toujours valable en local.
   - **Modifications** : aucune — seules les images `localhost:5000/team15/api:dev` et `localhost:5000/team15/frontend:dev` ont été reconstruites (depuis le cache, rien n'avait changé) et republiées, puis les conteneurs recréés (`podman compose up -d --force-recreate`) pour garantir que la version commitée à l'itération 3 est bien celle qui tourne.
 
+- **Reprise de l'itération 4** (temps en plus trouvé après coup, durée exacte inconnue du développeur) : une relecture ciblée (sous-agent `reviewer`, bugs réels/sécurité uniquement) a trouvé un vrai bug de bord, corrigé dans le même esprit de stabilisation :
+  - **Bug** : si `localStorage` contenait un `personaId` qui ne correspond à aucun persona connu (donnée corrompue ou persona retiré), `frontend/src/app/page.tsx` retournait `null` indéfiniment (page blanche), car l'effet de redirection ne testait que `!personaId` (vrai seulement si la clé est absente), pas la validité du persona.
+  - **Correctif** : `frontend/src/app/page.tsx` — l'effet redirige aussi vers `/qui-etes-vous` quand `trouverPersona(personaId)` échoue, pas seulement quand `personaId` est absent.
+  - **Vérifié** : `npm test` (11 tests) passe, `./scripts/verifier-deployabilite.sh` ne signale aucune borne, images reconstruites et republiées, conteneurs recréés, `curl localhost:8080/` → 200, `curl localhost:8081/health` → 200, `./scripts/signaler-version.sh 4` ré-accepté (même numéro de version, `updated_at` mis à jour).
+  - **Rien d'autre signalé** par la relecture : pas de secret commité, CSP et ports conformes, pas de souci CORS (chemins relatifs respectés), API sans état mutable.
+
 ## À venir (hors périmètre de ce hackathon)
 
 1. ⚠️ **Mémorisation automatique** des ateliers réservés/suivis et ressources consultées : reportée au-delà de ce hackathon — nécessitait de clarifier avec les cadreurs les écrans « ateliers » et « ressources », absents du prototype fourni (❓, jamais levé faute de temps).
