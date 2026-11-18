@@ -1,13 +1,16 @@
 # Plan d'itérations — L'BURN (équipe `9UV4RR`)
 
-**Plan validé le 2026-11-18.**
+**Itérations 1 et 2 validées et réalisées. Itération 3 proposée le 2026-11-18, en attente de validation par les cadreurs avant `/iteration 3`.**
 
 - **Source du plan** : proposé par l'agent (aucun plan d'itérations trouvé dans la passation : ni fichier `cadrage/*iteration*`, ni clé `iterations` dans `passation.json`).
 - **Temps restant annoncé** : 60 minutes, à la question posée le 2026-11-18.
 - **Temps restant au début de l'itération 1** : 45 minutes, annoncé le 2026-11-18.
-- **Durée du tour de test PM Lab** : 10 minutes (valeur par défaut, le développeur ne savait pas).
-- **Capacité estimée** : chaque itération coûte au moins publication (~5 min) + tour de test (10 min) = 15 min fixes, plus le codage (10 min au plus). Avec 60 minutes, **2 itérations détaillées tiennent confortablement, la 3e sera probablement une stabilisation courte plutôt qu'une nouvelle fonctionnalité.**
-- **✂️ Ce qui sort probablement du périmètre** si le temps ne s'étend pas : l'écran **Pause et reprise** (étape 3 du plan de l'équipe) et l'écran **Découverte de BIB** (étape 4). Ils restent dans « À venir », à re-découper si le temps restant augmente à l'issue de l'itération 2.
+- **Temps restant au début de l'itération 2** : 40 minutes, annoncé le 2026-11-18.
+- **Temps restant à la replanification après l'itération 2** : 35 minutes, annoncé le 2026-11-18.
+- **Durée du tour de test PM Lab** : 10 minutes (valeur par défaut, le développeur ne savait pas, confirmée à chaque question posée).
+- **Capacité estimée** : chaque itération coûte au moins publication (~5 min) + tour de test (10 min) = 15 min fixes, plus le codage (10 min au plus, mais ~2-3 min en pratique sur les itérations 1 et 2). Avec 35 minutes restantes, **1 itération détaillée (3) tient confortablement ; la 4e, si le temps le permet encore, sera une stabilisation courte plutôt qu'une nouvelle fonctionnalité.**
+- **⚠️ Changement d'ordre à valider par les cadreurs** : le plan numéroté de `cadrage/7-prd.md` (§153-164) place « 2. Mémorisation automatique » avant « 3. Pause et reprise ». Cette replanification garde **Pause et reprise** en premier (comme annoncé après l'itération 1), car la Mémorisation automatique suppose des écrans « ateliers » et « ressources » absents du prototype (`7-prd.md` §143 : « les écrans suivants non fournis… »), qu'il faudrait inventer — hors de ce que permet `CLAUDE.md` (« Inventer une fonctionnalité absente de la passation »). Pause et reprise, elle, a un écran décrit (§107) et s'enchaîne directement sur le bloc « envie du moment » déjà construit en itération 2.
+- **✂️ Ce qui sort probablement du périmètre** si le temps ne s'étend pas : la **Mémorisation automatique** (nécessite de clarifier les écrans ateliers/ressources avec les cadreurs, ❓) et la **Découverte de BIB**. Ils restent dans « À venir ».
 
 ## Itération 1 : la BURN'ette voit son tableau de bord avec son avancement par module
 
@@ -83,9 +86,29 @@
     - `frontend/src/app/page.tsx` — redirection vers `/qui-etes-vous` si aucun persona choisi, affichage du persona actif et bouton « Changer de persona », bloc « envie du moment » ; sert les critères 1, 2 et 3.
     - `e2e/demo.spec.ts` — étapes « Je choisis qui je suis » et « J'indique mon envie du moment ».
 
+## Itération 3 : la BURN'ette fait une pause et la retrouve en revenant
+
+- **Dans le périmètre** :
+  - Écran dédié « Faire une pause », atteint depuis le bloc « envie du moment » en choisissant « Je souhaite faire une pause » : notifications suspendues, aucun délai imposé, bouton « Reprendre mon parcours ».
+  - L'état de pause est enregistré automatiquement (pas de ressaisie) et reflété au retour sur l'application, y compris après un rechargement.
+- **Hors périmètre** : tout back-office Product Owner (déjà hors périmètre de la passation, §136 de `7-prd.md`), notifications réelles (aucune n'existe dans l'application), mémorisation automatique des ateliers/ressources (reporté, cf. ⚠️ plus haut).
+- **Critères d'acceptation** (3 au plus) :
+  - Étant donné le bloc « envie du moment », quand elle choisit « Je souhaite faire une pause », alors elle accède à l'écran « Faire une pause » indiquant que ses notifications sont suspendues, sans délai imposé.
+  - Étant donné l'écran « Faire une pause » déjà choisi, quand elle revient sur l'application (même après un rechargement), alors son état de pause est reflété automatiquement, sans ressaisie.
+  - Étant donné l'écran « Faire une pause », quand elle clique « Reprendre mon parcours », alors elle retrouve son tableau de bord avec son avancement intact.
+- **Hypothèse de l'équipe couverte** : « la plateforme peut refléter automatiquement la suspension ou la reprise d'un parcours, sans saisie manuelle » (mesure : 0 action manuelle) — partiellement, côté BURN'ette uniquement, puisque le back-office Product Owner est hors périmètre de cette version.
+- **Codage estimé** : 10 minutes (probablement moins, par expérience des itérations précédentes).
+- **Fichiers prévus** (~4) :
+  - `frontend/src/app/pause-data.ts` (logique pure : bascule pause/reprise, clé de persistance)
+  - `frontend/src/app/pause-data.test.ts`
+  - `frontend/src/app/pause/page.tsx` (écran « Faire une pause »)
+  - `frontend/src/app/page.tsx` (navigation depuis « envie du moment » vers `/pause`, redirection si déjà en pause)
+- **Tests unitaires prévus** : 1 à 3, sur la logique de bascule pause/reprise.
+- **Étapes ajoutées à la démo** : choisir « Je souhaite faire une pause », voir l'écran dédié, cliquer « Reprendre mon parcours », revenir au tableau de bord.
+- **Bilan** : _à remplir en fin d'itération_
+
 ## À venir (non détaillé, à re-découper au fil de l'eau)
 
-1. Pause et reprise : écran dédié, notifications suspendues, état reflété automatiquement sans action de la Product Owner. *(probablement hors du temps restant)*
-2. Mémorisation automatique des ateliers réservés/suivis et ressources consultées, pour un retour sans recherche.
-3. Découverte de BIB : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe. *(probablement hors du temps restant)*
-4. Stabilisation finale pour le pitch, si le temps restant ne permet plus de nouvelle fonctionnalité. **Prochaine itération proposée** : avec ~35-38 minutes restantes estimées, une itération 3 courte de stabilisation (vérifier le flux persona + envie du moment en conditions réelles via `$URL_PUBLIQUE`, corriger ce que l'équipe signale dans son tour de test) est plus probable qu'une nouvelle fonctionnalité (pause/reprise ou BIB), compte tenu du temps fixe de publication + tour de test (~15 min) par itération.
+1. Stabilisation finale pour le pitch, si le temps restant après l'itération 3 ne permet plus de nouvelle fonctionnalité — probable, vu la capacité estimée (~35 min pour l'itération 3 + une dernière passe).
+2. Mémorisation automatique des ateliers réservés/suivis et ressources consultées : ❓ nécessite de clarifier avec les cadreurs les écrans « ateliers » et « ressources », absents du prototype fourni.
+3. Découverte de BIB : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe. *(hors du temps restant)*
