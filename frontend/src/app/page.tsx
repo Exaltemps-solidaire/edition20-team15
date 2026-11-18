@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { trouverPersona, PERSONA_KEY } from "./personas-data";
 import { prochaineAction, type EnvieMoment, type ProchaineAction } from "./envie-du-moment";
+import { PAUSE_KEY, estEnPause } from "./pause-data";
 
 const OPTIONS_ENVIE: { id: EnvieMoment; libelle: string }[] = [
   { id: "ressource", libelle: "Je préfère découvrir une ressource" },
@@ -40,13 +41,20 @@ export default function Home() {
   const [personaId] = useState<string | null>(() =>
     typeof window === "undefined" ? null : window.localStorage.getItem(PERSONA_KEY)
   );
+  const [enPause] = useState<boolean>(() =>
+    typeof window === "undefined" ? false : estEnPause(window.localStorage.getItem(PAUSE_KEY))
+  );
   const [action, setAction] = useState<ProchaineAction | null>(null);
 
   useEffect(() => {
     if (!personaId) {
       router.replace("/qui-etes-vous");
+      return;
     }
-  }, [personaId, router]);
+    if (enPause) {
+      router.replace("/pause");
+    }
+  }, [personaId, enPause, router]);
 
   useEffect(() => {
     fetch("/api/v1/parcours")
@@ -65,7 +73,16 @@ export default function Home() {
     router.push("/qui-etes-vous");
   }
 
-  if (!persona) {
+  function choisirEnvie(envie: EnvieMoment) {
+    if (envie === "pause") {
+      window.localStorage.setItem(PAUSE_KEY, "true");
+      router.push("/pause");
+      return;
+    }
+    setAction(prochaineAction(envie));
+  }
+
+  if (!persona || enPause) {
     return null;
   }
 
@@ -125,7 +142,7 @@ export default function Home() {
                     <div className={styles.moduleInfo}>
                       <div className={styles.moduleNom}>{option.libelle}</div>
                     </div>
-                    <button type="button" className={styles.badge} onClick={() => setAction(prochaineAction(option.id))}>
+                    <button type="button" className={styles.badge} onClick={() => choisirEnvie(option.id)}>
                       Choisir
                     </button>
                   </li>

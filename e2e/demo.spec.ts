@@ -17,12 +17,17 @@ test("Démo : le cas passant", async ({ page }) => {
     await expect(page.getByText("33%")).toBeVisible();
   });
 
-  await test.step("J'indique mon envie du moment et je vois ma prochaine action", async () => {
+  await test.step("Je choisis de faire une pause", async () => {
     await page
       .getByRole("listitem")
       .filter({ hasText: "Je souhaite faire une pause" })
       .getByRole("button", { name: "Choisir" })
       .click();
-    await expect(page.getByText("Faire une pause")).toBeVisible();
+    await expect(page.getByText("Vos notifications sont suspendues")).toBeVisible();
+  });
+
+  await test.step("Je reprends mon parcours", async () => {
+    await page.getByRole("button", { name: "Reprendre mon parcours" }).click();
+    await expect(page.getByText("BURN TO BE ALIVE")).toBeVisible();
   });
 });

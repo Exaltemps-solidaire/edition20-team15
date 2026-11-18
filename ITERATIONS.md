@@ -1,12 +1,13 @@
 # Plan d'itérations — L'BURN (équipe `9UV4RR`)
 
-**Itérations 1 et 2 validées et réalisées. Itération 3 proposée le 2026-11-18, en attente de validation par les cadreurs avant `/iteration 3`.**
+**Itérations 1 et 2 validées et réalisées. Itération 3 : plan validé le 2026-11-18 (ordre Pause-avant-Mémorisation confirmé par les cadreurs).**
 
 - **Source du plan** : proposé par l'agent (aucun plan d'itérations trouvé dans la passation : ni fichier `cadrage/*iteration*`, ni clé `iterations` dans `passation.json`).
 - **Temps restant annoncé** : 60 minutes, à la question posée le 2026-11-18.
 - **Temps restant au début de l'itération 1** : 45 minutes, annoncé le 2026-11-18.
 - **Temps restant au début de l'itération 2** : 40 minutes, annoncé le 2026-11-18.
 - **Temps restant à la replanification après l'itération 2** : 35 minutes, annoncé le 2026-11-18.
+- **Temps restant au début de l'itération 3** : 25 minutes, annoncé le 2026-11-18. Capacité serrée : ~15 min fixes (publication + tour de test) laissent ~10 min de codage — le budget plafond, mais cohérent avec les ~2-3 min réelles des itérations précédentes.
 - **Durée du tour de test PM Lab** : 10 minutes (valeur par défaut, le développeur ne savait pas, confirmée à chaque question posée).
 - **Capacité estimée** : chaque itération coûte au moins publication (~5 min) + tour de test (10 min) = 15 min fixes, plus le codage (10 min au plus, mais ~2-3 min en pratique sur les itérations 1 et 2). Avec 35 minutes restantes, **1 itération détaillée (3) tient confortablement ; la 4e, si le temps le permet encore, sera une stabilisation courte plutôt qu'une nouvelle fonctionnalité.**
 - **⚠️ Changement d'ordre à valider par les cadreurs** : le plan numéroté de `cadrage/7-prd.md` (§153-164) place « 2. Mémorisation automatique » avant « 3. Pause et reprise ». Cette replanification garde **Pause et reprise** en premier (comme annoncé après l'itération 1), car la Mémorisation automatique suppose des écrans « ateliers » et « ressources » absents du prototype (`7-prd.md` §143 : « les écrans suivants non fournis… »), qu'il faudrait inventer — hors de ce que permet `CLAUDE.md` (« Inventer une fonctionnalité absente de la passation »). Pause et reprise, elle, a un écran décrit (§107) et s'enchaîne directement sur le bloc « envie du moment » déjà construit en itération 2.
@@ -105,10 +106,21 @@
   - `frontend/src/app/page.tsx` (navigation depuis « envie du moment » vers `/pause`, redirection si déjà en pause)
 - **Tests unitaires prévus** : 1 à 3, sur la logique de bascule pause/reprise.
 - **Étapes ajoutées à la démo** : choisir « Je souhaite faire une pause », voir l'écran dédié, cliquer « Reprendre mon parcours », revenir au tableau de bord.
-- **Bilan** : _à remplir en fin d'itération_
+- **Bilan** :
+  - **Durée de codage réelle** : ~1 minute (début → fin du chrono), aucun dépassement, pas d'alarme à 8 minutes.
+  - **Critères d'acceptation** : les 3 satisfaits — choisir « Je souhaite faire une pause » dans le bloc « envie du moment » ouvre l'écran dédié « Faire une pause » (notifications suspendues, aucun délai imposé) ; l'état de pause est stocké en `localStorage` et reflété automatiquement même après un rechargement de page (redirection vers `/pause` au chargement si l'état est actif) ; le bouton « Reprendre mon parcours » lève la pause et ramène au tableau de bord avec l'avancement intact (vérifié par un test unitaire sur `estEnPause` et par la démo).
+  - **Reporté** : rien de nouveau ; la mémorisation automatique (❓ à clarifier avec les cadreurs) et la découverte de BIB restent en « À venir ».
+  - **Harnais** : aucun blocage — `npm test` (11 tests, 5 fichiers) passe, `./scripts/verifier-deployabilite.sh --construire` ne signale aucune borne (Docker absent de la machine, construction non vérifiée — préconisation, pas une exigence), `./scripts/signaler-version.sh 3` a été accepté.
+  - **Démo (hors DoD)** : étapes « Je choisis de faire une pause » et « Je reprends mon parcours » ajoutées. Échoue localement à la même étape que l'itération 2 (tableau de bord, `fetch("/api/v1/parcours")` injoignable depuis `localhost:8080` sans passerelle) — même limitation déjà signalée, pas une régression de cette itération. Seul `$URL_PUBLIQUE` permettra de la rejouer avec succès.
+  - **Modifications** :
+    - `frontend/src/app/pause-data.ts` — logique pure `estEnPause` et clé de stockage `PAUSE_KEY` ; sert les critères 1 et 2.
+    - `frontend/src/app/pause-data.test.ts` — 3 tests sur `estEnPause`.
+    - `frontend/src/app/pause/page.tsx` — écran « Faire une pause » avec bouton « Reprendre mon parcours » ; sert les critères 1 et 3.
+    - `frontend/src/app/page.tsx` — redirection vers `/pause` si l'état de pause est actif au chargement, déclenchement de la pause depuis le bloc « envie du moment » ; sert les critères 1 et 2.
+    - `e2e/demo.spec.ts` — étapes « Je choisis de faire une pause » et « Je reprends mon parcours ».
 
 ## À venir (non détaillé, à re-découper au fil de l'eau)
 
-1. Stabilisation finale pour le pitch, si le temps restant après l'itération 3 ne permet plus de nouvelle fonctionnalité — probable, vu la capacité estimée (~35 min pour l'itération 3 + une dernière passe).
+1. Stabilisation finale pour le pitch, si le temps restant ne permet plus de nouvelle fonctionnalité — l'itération 3 n'a pris qu'~1 minute de codage, donc à reconfirmer avec le temps restant réel avant l'itération 4.
 2. Mémorisation automatique des ateliers réservés/suivis et ressources consultées : ❓ nécessite de clarifier avec les cadreurs les écrans « ateliers » et « ressources », absents du prototype fourni.
 3. Découverte de BIB : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe. *(hors du temps restant)*
