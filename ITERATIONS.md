@@ -1,6 +1,6 @@
 # Plan d'itérations — L'BURN (équipe `9UV4RR`)
 
-**Itérations 1, 2 et 3 validées et réalisées. Itération 4 proposée le 2026-11-18 : dernière itération, consacrée à la stabilisation (annoncée par le développeur), en attente de validation.**
+**Itérations 1, 2, 3 et 4 validées et réalisées. Itération 4 (stabilisation) était la dernière du hackathon : fin du build à 6 minutes restantes au moment de son déclenchement. Aucune itération supplémentaire n'est planifiée.**
 
 - **Source du plan** : proposé par l'agent (aucun plan d'itérations trouvé dans la passation : ni fichier `cadrage/*iteration*`, ni clé `iterations` dans `passation.json`).
 - **Temps restant annoncé** : 60 minutes, à la question posée le 2026-11-18.
@@ -139,7 +139,14 @@
 - **Fichiers prévus** : aucun par défaut ; seulement des corrections ciblées si la vérification en révèle le besoin (libellé, CSS, docs).
 - **Tests unitaires prévus** : aucun nouveau (pas de nouvelle logique métier) ; les 11 tests existants doivent continuer à passer.
 - **Étapes ajoutées à la démo** : aucune nouvelle étape ; rejouer `e2e/demo.spec.ts` tel quel pour confirmer la stabilité.
-- **Bilan** : _à remplir en fin d'itération_
+- **Temps restant annoncé au début de l'itération 4** : 6 minutes, le 2026-11-18 — plus serré que les 15 minutes prévues à la replanification. Confirmé sans retour précis à appliquer (aucune anomalie signalée par l'équipe au moment de coder ; question posée explicitement, réponse : « pas de retour précis disponible »).
+- **Bilan** :
+  - **Durée de codage réelle** : 0 minute — aucune ligne de code modifiée, conforme au plan (itération de stabilisation pure). Aucun dépassement.
+  - **Critères d'acceptation** : les 3 satisfaits — le cas passant rejoué manuellement (`curl`) confirme `frontend: 200`, `api/health: 200`, `frontend/sante: 200` sur la version republiée ; `npm test` (11 tests, 4 fichiers) passe sans échec ; `./scripts/verifier-deployabilite.sh` ne signale aucune borne ; `./scripts/signaler-version.sh 4` a été accepté par le harnais.
+  - **Reporté** : aucun changement — Mémorisation automatique et Découverte de BIB restent hors périmètre de ce hackathon (cf. « À venir »), comme décidé à la replanification.
+  - **Harnais** : aucun blocage.
+  - **Démo (hors DoD)** : non rejouée (budget consommé par la republication/vérification) ; `e2e/demo.spec.ts` inchangé, limitation déjà documentée (itérations 2 et 3) toujours valable en local.
+  - **Modifications** : aucune — seules les images `localhost:5000/team15/api:dev` et `localhost:5000/team15/frontend:dev` ont été reconstruites (depuis le cache, rien n'avait changé) et republiées, puis les conteneurs recréés (`podman compose up -d --force-recreate`) pour garantir que la version commitée à l'itération 3 est bien celle qui tourne.
 
 ## À venir (hors périmètre de ce hackathon)
 
