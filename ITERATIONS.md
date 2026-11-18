@@ -68,11 +68,24 @@
   - `api/src/routes.ts` (si les personas viennent de l'API)
 - **Tests unitaires prévus** : 1 à 3, sur la logique « envie du moment → prochaine action ».
 - **Étapes ajoutées à la démo** : choisir un persona, indiquer une envie du moment, voir la prochaine action proposée.
-- **Bilan** : _à remplir en fin d'itération_
+- **Temps restant annoncé au début de l'itération 2** : 40 minutes, le 2026-11-18.
+- **Bilan** :
+  - **Durée de codage réelle** : ~2 minutes (début → fin du chrono), aucun dépassement, pas d'alarme à 8 minutes.
+  - **Critères d'acceptation** : les 3 satisfaits — choisir un persona dans « Qui êtes-vous ? » affiche le tableau de bord avec son nom et son rôle ; le bouton « Changer de persona » ramène à l'écran « Qui êtes-vous ? » ; choisir une envie du moment affiche une seule prochaine action, sans message culpabilisant (vérifié par un test unitaire).
+  - **Reporté** : rien de nouveau ; la pause/reprise et la découverte BIB restent en « À venir », comme annoncé en itération 1.
+  - **Harnais** : aucun blocage — `npm test` (8 tests, 3 fichiers) passe, `./scripts/verifier-deployabilite.sh --construire` ne signale aucune borne (Docker absent de la machine, construction non vérifiée — préconisation, pas une exigence), `./scripts/signaler-version.sh 2` a été accepté.
+  - **Démo (hors DoD)** : Chromium installé cette fois (`npx playwright install chromium --with-deps`). La démo échoue localement à l'étape du tableau de bord : testée à `http://localhost:8080` directement (sans passer par la passerelle publique), `fetch("/api/v1/parcours")` ne peut pas atteindre l'API — la fusion `/api/* → 8081` n'existe qu'au niveau de la passerelle publique (`$URL_PUBLIQUE`), pas entre les ports 8080/8081 exposés localement sur la VM. Vérifié en confirmant que `curl localhost:8081/api/v1/parcours` répond correctement. Ce n'est pas une régression de cette itération ; la démo ne pourra être rejouée avec succès que via `$URL_PUBLIQUE`, injoignable depuis la machine. Signalé, ne bloque pas la publication.
+  - **Modifications** :
+    - `frontend/src/app/personas-data.ts` — liste des 5 personas (un par rôle du scénario) et clé de stockage `PERSONA_KEY` ; sert le critère 1.
+    - `frontend/src/app/envie-du-moment.ts` — logique pure « envie du moment → prochaine action » (3 options) ; sert le critère 3.
+    - `frontend/src/app/envie-du-moment.test.ts` — 3 tests sur `prochaineAction`.
+    - `frontend/src/app/qui-etes-vous/page.tsx` — écran « Qui êtes-vous ? », choix d'un persona stocké en `localStorage` ; sert le critère 1.
+    - `frontend/src/app/page.tsx` — redirection vers `/qui-etes-vous` si aucun persona choisi, affichage du persona actif et bouton « Changer de persona », bloc « envie du moment » ; sert les critères 1, 2 et 3.
+    - `e2e/demo.spec.ts` — étapes « Je choisis qui je suis » et « J'indique mon envie du moment ».
 
 ## À venir (non détaillé, à re-découper au fil de l'eau)
 
 1. Pause et reprise : écran dédié, notifications suspendues, état reflété automatiquement sans action de la Product Owner. *(probablement hors du temps restant)*
 2. Mémorisation automatique des ateliers réservés/suivis et ressources consultées, pour un retour sans recherche.
 3. Découverte de BIB : modules 4-5-6 (5 et 6 « en préparation »), bloc « Suis-je prête ? », demande d'échange avec l'équipe. *(probablement hors du temps restant)*
-4. Stabilisation finale pour le pitch, si le temps restant ne permet plus de nouvelle fonctionnalité.
+4. Stabilisation finale pour le pitch, si le temps restant ne permet plus de nouvelle fonctionnalité. **Prochaine itération proposée** : avec ~35-38 minutes restantes estimées, une itération 3 courte de stabilisation (vérifier le flux persona + envie du moment en conditions réelles via `$URL_PUBLIQUE`, corriger ce que l'équipe signale dans son tour de test) est plus probable qu'une nouvelle fonctionnalité (pause/reprise ou BIB), compte tenu du temps fixe de publication + tour de test (~15 min) par itération.
